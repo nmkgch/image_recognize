@@ -4,6 +4,7 @@ from PIL import Image
 import os
 import pathlib
 import matplotlib.pyplot as plt
+import math
 
 def restore_hierarchy(hierarchy, index):
     if(hierarchy[0][index][0] != -1):
@@ -78,7 +79,7 @@ def find_area(img):
     return area_top, area_bottom, area_left, area_right
 
 def extract_point(img):
-    hsvImg = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+    hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV_FULL)
 
     hsvLower = np.array([150, 50, 0])
     hsvUpper = np.array([200, 255, 255])
@@ -98,7 +99,7 @@ def extract_point(img):
 
     print("処理したあと:", hierarchy)
 
-    point_locate = [None for i in range(len(contours))]
+    point_locate = []
     for i in range(len(contours)):
         if(contours_io[i] != 1):
             continue
@@ -108,12 +109,12 @@ def extract_point(img):
 
         mid_point = [int((area_top + area_bottom) / 2), int((area_left + area_right) / 2)]
 
-        point_locate[i] = mid_point
+        point_locate.append(mid_point)
 
     return point_locate
 
 def extract_frame(img, file_path):
-    hsvImg = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+    hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV_FULL)
 
     hsvLower=np.array([215, 50, 0])
     hsvUpper=np.array([255, 255, 255])
@@ -138,35 +139,63 @@ def extract_frame(img, file_path):
 
     print("hierarchy:",hierarchy)
     
-    parent = None
+    index = None
     for i in range(len(contours)):
         if(hierarchy[0][i][2] != -1):
-            parent = i
+            index = i
             break
 
-    print("parent:", parent)
+    while(hierarchy[0][index][1] != -1):
+        index = hierarchy[0][index][1]
 
-    extract_index = None
-    while(parent != -1):
-        extract_index = parent
-        parent = hierarchy[0][parent][2]
+    print("index:", index)
+
+    extract_index = []
+    while(index != -1):
+        while(hierarchy[0][index][2] != -1):
+            index = hierarchy[0][index][2]
+        extract_index.append(index)
+        index = hierarchy[0][index][3]
+        index = hierarchy[0][index][0]
 
     print("extract_index", extract_index)
 
-    empty_img = np.zeros((img.shape[0], img.shape[1]))
-    cv2.fillConvexPoly(empty_img, contours[extract_index], 255)
-    character_mask = empty_img
+    frame_locate = []
+    character_img_array = []
+    for i in extract_index:
+        empty_img = np.zeros((img.shape[0], img.shape[1]))
+        cv2.fillConvexPoly(empty_img, contours[i], 255)
+        character_mask = empty_img
 
-    area_top, area_bottom, area_left, area_right = find_area(img)
+        area_top, area_bottom, area_left, area_right = find_area(character_mask)
 
-    character_img = img[area_top:area_bottom + 1, area_left:area_right + 1]
-    
-    file_name, ext = os.path.splitext( os.path.basename(file_path) )
-    new_path = './image_recognize/image_extract/' + file_name + '_extract' + ext
+        frame_locate.append([area_top, area_bottom, area_left, area_right])
 
-    new_file = pathlib.Path(new_path)
-    new_file.touch()
+        character_img_array.append(img[area_top:area_bottom + 1, area_left:area_right + 1])
+        
+        # file_name, ext = os.path.splitext( os.path.basename(file_path) )
+        # new_path = './image_recognize/image_extract/' + file_name + '_extract' + ext
 
-    cv2.imwrite(new_path, character_img)
+        # new_file = pathlib.Path(new_path)
+        # new_file.touch()
 
-    return character_img
+        # cv2.imwrite(new_path, character_img)
+
+    point_locate = extract_point(img)
+
+    sorted(point_locate)
+
+    frame_number = []
+    for i in range(len(frame_locate)):
+        min_dist = math.sqrt(img.shape[0] * img.shape[0] + img.shape[1] * img.shape[1])
+        min_index = None
+        for j in range(len(point_locate)):
+            vertical = abs(point_locate[j][0] - frame_locate[i][0])
+            beside = abs(point_locate[j][1] - frame_locate[i][2])
+            dist = math.sqrt(vertical * vertical + beside * beside)
+            if(min_dist > dist):
+                min_dist = dist
+                min_index = j
+        frame_number.append(min_index)
+
+    return character_img_array, frame_number

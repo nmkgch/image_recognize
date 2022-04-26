@@ -81,7 +81,7 @@ def find_area(img):
 def extract_point(img):
     hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV_FULL)
 
-    hsvLower = np.array([150, 50, 0])
+    hsvLower = np.array([150, 100, 0])
     hsvUpper = np.array([200, 255, 255])
 
     mask = cv2.inRange(hsvImg, hsvLower, hsvUpper)

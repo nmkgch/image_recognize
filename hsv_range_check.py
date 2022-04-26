@@ -17,7 +17,7 @@ cv2.createTrackbar('minV', 'image', 0, 255, nothing)
 cv2.createTrackbar('maxV', 'image', 255, 255, nothing)
 
 # イメージの読み込み
-img = cv2.imread('./image_recognize/frame_red_image\WIN_20220329_09_19_46_Pro.jpg')
+img = cv2.imread('./image_recognize/WIN_20220419_16_50_37_Pro.jpg')
 
 # HSV変換
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV_FULL)

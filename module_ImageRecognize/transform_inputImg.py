@@ -3,8 +3,17 @@ import numpy as np
 import os
 import pathlib
 from keras import backend as Keras
+import matplotlib.pyplot as plt
 
-def transform_inputImg(img, file_path, IMG_ROWS, IMG_COLS):
+def transform_inputImg(img, IMG_ROWS, IMG_COLS):
+    subfig = []
+    fig = plt.figure(figsize=(6.4, 2.4))
+    PLOT_ROWS = 1
+    PLOT_COLUMNS = 3
+
+    subfig.append(fig.add_subplot(PLOT_ROWS, PLOT_COLUMNS, 1))
+    subfig[0].imshow(img)
+
     # dilate_var = 50
     # kernel = np.ones((dilate_var, dilate_var), np.uint8)
     # img = cv2.dilate(img, kernel, iterations = 1)
@@ -14,7 +23,7 @@ def transform_inputImg(img, file_path, IMG_ROWS, IMG_COLS):
     b = (180, 80, 130)
     result_img = cv2.inRange(hsv_img, a, b)
 
-    close_var = 5
+    close_var = 1
     kernel = np.ones((close_var, close_var), np.uint8)
     result_img = cv2.morphologyEx(result_img, cv2.MORPH_CLOSE, kernel)
 
@@ -25,13 +34,16 @@ def transform_inputImg(img, file_path, IMG_ROWS, IMG_COLS):
     # plt.imshow(result_img)
     # plt.show()
 
-    file_name, ext = os.path.splitext( os.path.basename(file_path) )
-    new_path = './image_recognize/image_io/' + file_name + '_io' + ext
+    # file_name, ext = os.path.splitext( os.path.basename(file_path) )
+    # new_path = './image_recognize/image_io/' + file_name + '_io' + ext
 
-    new_file = pathlib.Path(new_path)
-    new_file.touch()
+    # new_file = pathlib.Path(new_path)
+    # new_file.touch()
 
-    cv2.imwrite(new_path, result_img)
+    # cv2.imwrite(new_path, result_img)
+
+    subfig.append(fig.add_subplot(PLOT_ROWS, PLOT_COLUMNS, 2))
+    subfig[1].imshow(result_img)
 
     right = 0
     left = result_img.shape[1] - 1
@@ -83,9 +95,10 @@ def transform_inputImg(img, file_path, IMG_ROWS, IMG_COLS):
     # plt.imshow(new_img)
     # plt.show()
 
-    dilate_var = 20
-    kernel = np.ones((dilate_var, dilate_var), np.uint8)
-    dilation_img = cv2.dilate(new_img, kernel, iterations = 1)
+    dilation_img = new_img
+    # dilate_var = 20
+    # kernel = np.ones((dilate_var, dilate_var), np.uint8)
+    # dilation_img = cv2.dilate(new_img, kernel, iterations = 1)
 
     # print('膨張した画像')
     # plt.imshow(dilation_img)
@@ -140,13 +153,17 @@ def transform_inputImg(img, file_path, IMG_ROWS, IMG_COLS):
     # plt.imshow(resized_rev_img)
     # plt.show()
 
-    file_name, ext = os.path.splitext( os.path.basename(file_path) )
-    new_path = './image_recognize/image_bit/' + file_name + '_bit' + ext
+    # file_name, ext = os.path.splitext( os.path.basename(file_path) )
+    # new_path = './image_recognize/image_bit/' + file_name + '_bit' + ext
 
-    new_file = pathlib.Path(new_path)
-    new_file.touch()
+    # new_file = pathlib.Path(new_path)
+    # new_file.touch()
 
-    cv2.imwrite(new_path, resized_rev_img)
+    # cv2.imwrite(new_path, resized_rev_img)
+
+    subfig.append(fig.add_subplot(PLOT_ROWS, PLOT_COLUMNS, 3))
+    subfig[2].imshow(resized_rev_img)
+    plt.show()
 
     resized_rev_img = [resized_rev_img]
 

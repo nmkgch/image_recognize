@@ -183,7 +183,7 @@ def extract_frame(img, file_path):
 
     point_locate = extract_point(img)
 
-    sorted(point_locate)
+    point_locate.sort()
 
     frame_number = []
     for i in range(len(frame_locate)):

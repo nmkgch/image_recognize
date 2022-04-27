@@ -60,8 +60,6 @@ image_nums = len(files)
 character_nums = 0
 print(files)
 for i in range(image_nums):
-    result_array = []
-
     print(files[i])
     img = cv2.imread(files[i])
 
@@ -72,13 +70,14 @@ for i in range(image_nums):
 
     character_img_array, frame_number = extract_frame(img, None)
     
-    for index in frame_number:
+    result_array = [None] * len(character_img_array)
+    for index in range(len(character_img)):
         character_nums += 1
         character_img = character_img_array[index]
 
-        # plt.imshow(moji_img)
-        # plt.gray()
-        # plt.show()
+        plt.imshow(character_img)
+        plt.gray()
+        plt.show()
 
         input_img = transform_inputImg(character_img, files[i], IMG_ROWS, IMG_COLS)
         # print(input_img)
@@ -91,7 +90,7 @@ for i in range(image_nums):
 
         prediction_number = np.argmax(prediction_result[0])
 
-        result_array.append(handwritten_number_names[prediction_number])
+        result_array[frame_number[index]] = handwritten_number_names[prediction_number]
 
     whole_result_array.append(result_array)
 

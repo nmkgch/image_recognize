@@ -70,19 +70,13 @@ for i in range(image_nums):
     character_img_array, frame_number = extract_frame(img, None)
     
     result_array = [None] * len(character_img_array)
-    for index in range(len(character_img)):
+    for index in range(len(character_img_array)):
         character_nums += 1
 
         character_img = character_img_array[index]
 
-<<<<<<< HEAD
-        plt.imshow(character_img)
-        plt.gray()
-        plt.show()
-=======
         # plt.imshow(moji_img)
         # plt.gray(
->>>>>>> 00ece19cba56dc6d1eddc980b02c515ddd1004f6
 
         input_img = transform_inputImg(character_img, IMG_ROWS, IMG_COLS)
         # print(input_img)

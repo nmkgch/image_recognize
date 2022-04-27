@@ -50,8 +50,7 @@ IMG_ROWS, IMG_COLS = 28, 28
 
 keras_mnist_model = load_model('./image_recognize/colab_mnist.hdf5')
 
-# prediction_array = keras_mnist_model.predict(test_data)
-
+# pred
 whole_result_array = []
 # files = glob.glob("./image_recognize/image/*")
 # files = glob.glob("./image_recognize/frame_red_image/*")
@@ -71,21 +70,16 @@ for i in range(image_nums):
     img = cv2.resize(img, dsize=(WIDTH, HEIGHT))
 
     character_img_array, frame_number = extract_frame(img, None)
-
-    print("frame_number:", frame_number)
     
     for index in frame_number:
         character_nums += 1
+
         character_img = character_img_array[index]
 
-        plt.imshow(character_img)
-        plt.show()
-
         # plt.imshow(moji_img)
-        # plt.gray()
-        # plt.show()
+        # plt.gray(
 
-        input_img = transform_inputImg(character_img, files[i], IMG_ROWS, IMG_COLS)
+        input_img = transform_inputImg(character_img, IMG_ROWS, IMG_COLS)
         # print(input_img)
 
         handwritten_number_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']

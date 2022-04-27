@@ -60,6 +60,7 @@ data_nums = len(files)
 print(files)
 for i in range(data_nums):
     print(files[i])
+    # 画像はBGR形式
     moji_img = cv2.imread(files[i])
 
     # hsv_img = cv2.cvtColor(moji_img, cv2.COLOR_RGB2HSV)

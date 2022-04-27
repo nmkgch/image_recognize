@@ -124,10 +124,6 @@ def extract_frame(img, file_path):
     plt.imshow(mask)
     plt.show()
 
-    _img=cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    result = cv2.bitwise_and(_img, _img, mask=mask)
-
-    chara_list = []
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     # [Next, Previous, First_Child, Parent]
 

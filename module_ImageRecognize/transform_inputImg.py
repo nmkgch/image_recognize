@@ -14,7 +14,7 @@ def transform_inputImg(img, file_path, IMG_ROWS, IMG_COLS):
     b = (180, 80, 130)
     result_img = cv2.inRange(hsv_img, a, b)
 
-    close_var = 5
+    close_var = 1
     kernel = np.ones((close_var, close_var), np.uint8)
     result_img = cv2.morphologyEx(result_img, cv2.MORPH_CLOSE, kernel)
 
@@ -83,9 +83,10 @@ def transform_inputImg(img, file_path, IMG_ROWS, IMG_COLS):
     # plt.imshow(new_img)
     # plt.show()
 
-    dilate_var = 20
-    kernel = np.ones((dilate_var, dilate_var), np.uint8)
-    dilation_img = cv2.dilate(new_img, kernel, iterations = 1)
+    dilation_img = new_img
+    # dilate_var = 20
+    # kernel = np.ones((dilate_var, dilate_var), np.uint8)
+    # dilation_img = cv2.dilate(new_img, kernel, iterations = 1)
 
     # print('膨張した画像')
     # plt.imshow(dilation_img)

@@ -71,10 +71,15 @@ for i in range(image_nums):
     img = cv2.resize(img, dsize=(WIDTH, HEIGHT))
 
     character_img_array, frame_number = extract_frame(img, None)
+
+    print("frame_number:", frame_number)
     
     for index in frame_number:
         character_nums += 1
         character_img = character_img_array[index]
+
+        plt.imshow(character_img)
+        plt.show()
 
         # plt.imshow(moji_img)
         # plt.gray()

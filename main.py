@@ -10,8 +10,11 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+from PIL import Image
+from PIL.ExifTags import TAGS
 from module_ImageRecognize.transform_inputImg import transform_inputImg
 from module_ImageRecognize.extract_frame import extract_frame
+from module_ImageRecognize.select_image_file import select_image_file
 
 # filepath = "image_recognize/colab_mnist.hdf5"
 
@@ -50,17 +53,43 @@ IMG_ROWS, IMG_COLS = 28, 28
 
 keras_mnist_model = load_model('./image_recognize/colab_mnist.hdf5')
 
-# pred
+# prediction_array = keras_mnist_model.predict(test_data)
 whole_result_array = []
 # files = glob.glob("./image_recognize/image/*")
 # files = glob.glob("./image_recognize/frame_red_image/*")
-files = ['./image_recognize/frame_point_image/WIN_20220426_20_46_57_Pro.jpg']
+# files = ['./image_recognize/frame_point_image/WIN_20220430_23_26_40_Pro.jpg']
+files = [select_image_file()]
 image_nums = len(files)
 character_nums = 0
 print(files)
 for i in range(image_nums):
     print(files[i])
-    img = cv2.imread(files[i])
+    #入力はRGB形式
+    img = Image.open(files[i])
+
+    #exif情報を取得
+    exif = img._getexif()
+
+    #exif情報からOrientationを取得
+    exif_data = []
+    for id, value in exif.items():
+        if TAGS.get(id) == 'Orientation':
+            tag = TAGS.get(id, id),value
+            exif_data.extend(tag)
+
+    if exif_data[1] == 3:
+        #180度回転
+        img = img.transpose(Image.ROTATE_180)
+    elif exif_data[1] == 6:
+        #270度回転
+        img = img.transpose(Image.ROTATE_270)
+    elif exif_data[1] == 8:
+        #90度回転
+        img = img.transpose(Image.ROTATE_90)
+
+    img = np.array(img)
+    #RGB形式をBGR形式に変換(OpenCVが基本的にBGRなため)
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
     WIDTH = 1280
     h, w = img.shape[:2]
@@ -101,7 +130,7 @@ print(whole_result_array)
 #            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
 #            '2', '9', '4', '8', '5', '5', '3', '9', '6', '3']           
 # answer = ['3', '4', '9', '2', '4']
-answer = [['3', '9', '4', '2', '1']]
+answer = [['6', '3', '2', '4', '1']]
 
 
 cnt = 0
